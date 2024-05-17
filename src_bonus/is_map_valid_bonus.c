@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:33:13 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/17 10:48:08 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 21:59:15 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ int	is_map_valid(t_tilemap *map)
 			free_matrix(map->matrix), exit(0), FALSE);
 	if (!is_map_beatable(map, &map->p_start_pos))
 		return (FALSE);
-	ft_printf("%i", map->available_space);
 	return (TRUE);
 }
 
@@ -89,8 +88,7 @@ static int	is_map_beatable(t_tilemap *map, t_vector *p_start_pos)
 		return (free_matrix(map_dup), free_matrix(map->matrix),
 			ft_printf(INVALID_MAP_ERROR), exit(0), FALSE);
 	if (map->width > MAX_WIDTH || map->height > MAX_HEIGHT)
-		printf("Map exceeds screen measures! It will still be processed, \
-			but some tiles will may be hidden.\n");
+		printf("Map exceeds screen measures! It will still be processed, but some tiles will may be hidden.\n");
 	return (free_matrix(map_dup), TRUE);
 }
 

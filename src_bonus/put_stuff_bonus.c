@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:46:53 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/17 11:15:59 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 21:40:36 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,14 @@ void	put_player(t_root *root)
 	char	*player_frame;
 
 	player_frame = get_player_frame(root->player.mov_dir, root->global_timer);
-	if (ft_strncmp(player_frame, STD_PLAYER_PATH, ft_strlen(STD_PLAYER_PATH)) == 0)
+	if (!player_frame)
 	{
 		root->player.mov_dir = STILL;
                 root->player.p_pos = root->player.pos;
+		player_frame = ft_strdup(STD_PLAYER_PATH);
 	}
+	else if (root->player.mov_dir == STILL && root->map.matrix[root->player.pos.y][root->player.pos.x].c == 'E')
+		player_frame = ft_strdup("./sprites_bonus/player/player00.xpm");
 	root->player.sprite = create_sprite(root, player_frame);
 	if (root->player.mov_dir == STILL || root->player.mov_dir == LEFT || root->player.mov_dir == UP)
 		drawing_pos = root->player.pos;

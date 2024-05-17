@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 20:00:43 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/17 08:56:33 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 21:51:22 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*get_empty_frame(t_tile tile, int timer)
 	char	*str2;
 
 	if (!tile.anim)
-		return ("./sprites_bonus/empty/empty0.xpm");
+		return (ft_strdup("./sprites_bonus/empty/empty0.xpm"));
 	str1 = ft_itoa(timer % FPS);
 	str2 = ft_strjoin("./sprites_bonus/empty/empty", str1);
 	free(str1);
@@ -36,11 +36,11 @@ char    *get_player_frame(int dir, int timer)
 	(void)timer;
 	if (i == 10)
 	{
-		dir = STILL;
 		i = 0;
+		return (NULL);
 	}
         if (dir == STILL)
-                return (STD_PLAYER_PATH);
+                return (ft_strdup(STD_PLAYER_PATH));
         str1 = ft_itoa((dir * 10) + (i++ % FPS));
         str2 = ft_strjoin(PLAYER_PATH, str1);
         free(str1);

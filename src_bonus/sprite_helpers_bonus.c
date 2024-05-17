@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:50:18 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/17 10:54:43 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 21:47:47 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 char	*get_sprite_path(t_tile tile, int timer)
 {
 	if (tile.c == '1')
-		return (WALL_PATH);
+		return (ft_strdup(WALL_PATH));
 	else if (tile.c == 'C' || tile.c == 'P' || tile.c == '0')
 		return (get_empty_frame(tile, timer));
 	else if (tile.c == 'E')
-		return (EXIT_PATH);
+		return (ft_strdup(EXIT_PATH));
 	return (NULL);
 }
 
@@ -35,7 +35,7 @@ t_sprite	*create_sprite(t_root *root, char *sprite_path)
 			&sprite->height);
 	sprite->addr = mlx_get_data_addr(sprite->img, &sprite->bits_per_pixel,
 			&sprite->line_length, &sprite->endian);
-	//free(sprite_path);
+	free(sprite_path);
 	return (sprite);
 }
 
