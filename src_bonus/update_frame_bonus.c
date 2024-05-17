@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:38:26 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/15 15:21:30 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/15 20:14:56 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	update_frame(t_root *root)
 	put_collectibles(root);
 	put_player(root);
 	put_rain(root);
+	put_lightning(root);
 	mlx_put_image_to_window(root->mlx, root->win,
 		root->world_sprite->img, x, y);
 }

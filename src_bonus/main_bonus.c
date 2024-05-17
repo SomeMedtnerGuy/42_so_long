@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 20:34:26 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/15 16:10:22 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 10:26:46 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,12 @@ void	set_tiles_anims(t_root *root)
 		x = -1;
 		while (++x < root->map.width)
 		{
-			if (root->map.matrix[y][x].c == '0')
+			if (root->map.matrix[y][x].c == '0'
+				|| root->map.matrix[y][x].c == 'C')
 			{
 				if (root->map.matrix[y][x].anim == 1)
 					root->map.matrix[y][x].anim = 0;
-				else if (rand() % 10 == 0)
+				else if (rand() % 5 == 0)
 					root->map.matrix[y][x].anim = 1;
 			}
 		}
@@ -113,11 +114,6 @@ int	render_next_frame(t_root *root)
 		root->global_timer++;
 		update_frame(root);
 		time_since_boot %= SECOND / FPS;
-		/*if (root->global_timer % FPS == 9)
-		{
-                        root->player.mov_dir = STILL;
-			root->player.p_pos = root->player.pos;
-		}*/
 	}
 	return (0);
 }
@@ -129,6 +125,7 @@ void	finish_setup(t_root *root)
 	root->player.p_pos.y = root->player.pos.y;
 	root->player.p_pos.x = root->player.pos.x;
         root->player.mov_am = 0;
+	root->player.max_mov_am = root->map.available_space * (root->map.collectible_am + 1);
 	root->player.mov_dir = STILL;
 	root->global_timer = 0;
 }

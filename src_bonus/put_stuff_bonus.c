@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:46:53 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/15 16:09:29 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 11:15:59 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,10 @@ void	put_player(t_root *root)
 	char	*player_frame;
 
 	player_frame = get_player_frame(root->player.mov_dir, root->global_timer);
-	if (!player_frame)
+	if (ft_strncmp(player_frame, STD_PLAYER_PATH, ft_strlen(STD_PLAYER_PATH)) == 0)
 	{
-		 root->player.mov_dir = STILL;
-                 root->player.p_pos = root->player.pos;
-		 player_frame = STD_PLAYER_PATH;
+		root->player.mov_dir = STILL;
+                root->player.p_pos = root->player.pos;
 	}
 	root->player.sprite = create_sprite(root, player_frame);
 	if (root->player.mov_dir == STILL || root->player.mov_dir == LEFT || root->player.mov_dir == UP)
@@ -72,7 +71,8 @@ void	put_collectibles(t_root *root)
 		{
 			if (root->map.matrix[y][x].c == 'C')
 			{
-				sprite = create_sprite(root, COLLECTIBLE_PATH);
+				sprite = create_sprite(root, 
+					get_collectible_frame(root->map.matrix[y][x]));
 				put_sprite_in_world(sprite, root, x, y);
 				mlx_destroy_image(root->mlx, sprite->img);
 				free(sprite);
@@ -89,4 +89,22 @@ void	put_rain(t_root *root)
 	put_rain_anim_in_world(sprite, root, 0, 0);
 	mlx_destroy_image(root->mlx, sprite->img);
         free(sprite);
+}
+
+void	put_lightning	(t_root *root)
+{
+	int	x;
+	int	y;
+
+	if (root->global_timer % 100 != 0
+		&& (root->global_timer + 3) % 100 != 0
+		&& (root->global_timer + 4) % 100 != 0)
+		return ;
+	y = -1;
+	while (++y < root->world_sprite->height)
+	{
+		x = -1;
+		while (++x < root->world_sprite->width)
+			add_brightness_to_pixel(root->world_sprite, x, y);
+	}
 }

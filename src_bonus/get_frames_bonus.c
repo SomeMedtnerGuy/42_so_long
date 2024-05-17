@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/13 20:00:43 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/15 16:08:31 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 08:56:33 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ char    *get_player_frame(int dir, int timer)
 	(void)timer;
 	if (i == 10)
 	{
+		dir = STILL;
 		i = 0;
-		return (NULL);
 	}
         if (dir == STILL)
                 return (STD_PLAYER_PATH);
@@ -47,6 +47,14 @@ char    *get_player_frame(int dir, int timer)
         str1 = ft_strjoin(str2, ".xpm");
         free(str2);
         return (str1);
+}
+
+char	*get_collectible_frame(t_tile tile)
+{
+        if (!tile.anim)
+		return (ft_strdup("./sprites_bonus/collectible/collectible0.xpm"));
+	else
+		return (ft_strdup("./sprites_bonus/collectible/collectible1.xpm"));
 }
 
 char	*get_rain_frame(int timer)

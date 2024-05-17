@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:50:18 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/15 15:20:56 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 10:54:43 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,20 @@ void	put_sprite_in_world(t_sprite *sprite, t_root *root, int posx, int posy)
 	}
 }
 
+int	get_player_color(t_entity *player)
+{
+	int	moves_spent_perc;
+	int	color;
+
+	color = 0;
+	moves_spent_perc = (player->mov_am * 100) / player->max_mov_am;
+	if (moves_spent_perc < 50)
+		color = (moves_spent_perc * 2 * 0xFF) / 100 << 16 | 0xFF << 8 | 0;
+	else
+		color = 0xFF << 16 | (0xFF - (((moves_spent_perc - 50) * 2 * 0xFF) / 100)) << 8 | 0;
+	return (color);
+}
+
 void	put_player_anim_in_world(t_sprite *sprite, t_root *root, int posx, int posy)
 {
         int                             x;
@@ -74,9 +88,12 @@ void	put_player_anim_in_world(t_sprite *sprite, t_root *root, int posx, int posy
                 {
                         color = get_color_in_pixel(sprite, x, y);
                         if (color)
+			{
+				color = get_player_color(&root->player);
                                 put_pixel(root->world_sprite,
                                         posx * SPRITE_SIZE + x,
                                         posy * SPRITE_SIZE + y, color);
+			}
                 }
         }
 }

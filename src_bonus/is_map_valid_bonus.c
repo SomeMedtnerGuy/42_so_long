@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:33:13 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/13 19:35:11 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 10:48:08 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	is_map_valid(t_tilemap *map)
 	int	checks;
 
 	map->collectible_am = 0;
+	map->available_space = 0;
 	y = -1;
 	while (++y < map->height)
 	{
@@ -41,6 +42,7 @@ int	is_map_valid(t_tilemap *map)
 			free_matrix(map->matrix), exit(0), FALSE);
 	if (!is_map_beatable(map, &map->p_start_pos))
 		return (FALSE);
+	ft_printf("%i", map->available_space);
 	return (TRUE);
 }
 
@@ -55,15 +57,18 @@ static int	is_char_valid(t_tilemap *map, int pos_x, int pos_y)
 		&& c != '1')
 		return (ft_printf(INVALID_MAP_ERROR), -1);
 	else if (c == 'P' && checks % 2 == 0)
-		return (checks |= 1,
+		return (checks |= 1, map->available_space += 1,
 			map->p_start_pos.x = pos_x,
 			map->p_start_pos.y = pos_y,
 			checks);
 	else if (c == 'E' && checks < 4)
-		return (checks |= 1 << 2, checks);
+		return (map->available_space += 1, checks |= 1 << 2, checks);
 	else if (c == 'C')
-		return (checks |= 1 << 1, map->collectible_am++, checks);
-	else if (c == '1' || c == '0')
+		return (map->available_space += 1, checks |= 1 << 1,
+			map->collectible_am++, checks);
+	else if (c == '0')
+		return (map->available_space += 1, checks);
+	else if (c == '1')
 		return (checks);
 	else
 		return (ft_printf(INVALID_MAP_ERROR), -1);

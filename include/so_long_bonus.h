@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:39:00 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/14 21:07:17 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 09:48:53 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_tilemap
 	int			height;
 	t_tile		**matrix;
 	int			collectible_am;
+	int			available_space;
 	t_vector	p_start_pos;
 }	t_tilemap;
 
@@ -57,6 +58,7 @@ typedef struct s_entity
 	t_vector	p_pos;
 	t_sprite	*sprite;
 	int			mov_am;
+	int			max_mov_am;
 	int			mov_dir;
 }	t_entity;
 
@@ -80,7 +82,7 @@ typedef struct s_root
 # define WALL '1'
 # define WALL_PATH "./sprites_bonus/wall/wall.xpm"
 # define COLLECTIBLE 'C'
-# define COLLECTIBLE_PATH "./sprites_bonus/collectible/collectible.xpm"
+# define COLLECTIBLE_PATH "./sprites_bonus/collectible/collectible1.xpm"
 # define EXIT 'E'
 # define EXIT_PATH "./sprites_bonus/exit/exit.xpm"
 # define PLAYER 'P'
@@ -113,6 +115,7 @@ int				is_map_valid(t_tilemap *map);
 void			parse_map(t_root *root, char *map_filename);
 void			put_pixel(t_sprite *sprite, int x, int y, int color);
 unsigned int	get_color_in_pixel(t_sprite *sprite, int x, int y);
+void			add_brightness_to_pixel(t_sprite *sprite, int x, int y);
 char			*get_sprite_path(t_tile tile, int timer);
 t_sprite		*create_sprite(t_root *root, char *sprite_path);
 void			put_sprite_in_world(t_sprite *sprite,
@@ -125,6 +128,7 @@ void			put_map(t_root *root);
 void			put_player(t_root *root);
 void			put_collectibles(t_root *root);
 void			put_rain(t_root *root);
+void    		put_lightning   (t_root *root);
 void			update_frame(t_root *root);
 void			handle_player_mov(t_root *root);
 int				close_game(t_root *root);
@@ -133,6 +137,7 @@ void			free_map_and_exit(t_tilemap *map);
 
 char    *get_empty_frame(t_tile tile, int timer);
 char    *get_player_frame(int dir, int timer);
+char    *get_collectible_frame(t_tile tile);
 char	*get_rain_frame(int timer);
 
 #endif

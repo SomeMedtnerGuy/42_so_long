@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/14 19:29:06 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/14 21:02:20 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/17 11:17:16 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,11 @@ void	handle_player_mov(t_root *root)
 	else if (root->map.matrix[y][x].c == 'E' && root->map.collectible_am == 0)
 	{
 		ft_printf("You won!\n");
+		close_game(root);
+	}
+	else if (root->player.mov_am >= root->player.max_mov_am)
+	{
+		ft_printf("You ran out of stamina! You lost!!");
 		close_game(root);
 	}
 }
