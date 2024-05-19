@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:39:00 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/17 09:48:53 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/19 10:59:07 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../mlx_linux/mlx.h"
 # include "../libft/libft.h"
 # include <stdlib.h>
+# include <errno.h>
 # include <time.h>
 
 typedef struct s_vector
@@ -76,6 +77,10 @@ typedef struct s_root
 # define TRUE 1
 # define FALSE 0
 
+# define PLAYER_FLAG 0
+# define COLLECT_FLAG 1
+# define EXIT_FLAG 2
+
 # define EMPTY '0'
 # define STD_EMPTY_PATH "./sprites_bonus/empty/empty0.xpm"
 # define EMPTY_PATH "./sprites_bonus/empty/empty"
@@ -90,6 +95,8 @@ typedef struct s_root
 # define PLAYER_PATH "./sprites_bonus/player/player"
 # define RAIN_PATH "./sprites_bonus/rain/rain"
 # define IMG_EXTENSION ".xpm"
+# define MAP_EXTENSION ".ber"
+# define MAP_EXTENSION_LEN 4
 
 # define STILL 0
 # define UP 1
@@ -105,13 +112,15 @@ typedef struct s_root
 # define PANIM_SIZE 128
 
 # define WRONG_USAGE_ERROR "Error\n Wrong usage"
-# define WRONG_EXTENTION_ERROR "Error\n File is not .ber\n"
-# define WIDTH_ERROR "Error\n Width discrepancy noticed in line %i\n"
+# define WRONG_EXTENSION_ERROR "Error\n File is not .ber\n"
+# define WIDTH_ERROR "Error\n Map is not rectangular"
 # define ALLOC_ERROR "Error\n Allocation failure\n"
 # define INVALID_PATH_ERROR "Error\n Provided map path is invalid\n"
 # define INVALID_MAP_ERROR "ERROR\n Provided map is invalid\n"
+# define MAP_TOO_BIG_WARNING "WARNING\n Map exceeds screen measures! \
+It will still be processed, but some tiles may be hidden.\n"
 
-int				is_map_valid(t_tilemap *map);
+void			check_map_validity(t_tilemap *map);
 void			parse_map(t_root *root, char *map_filename);
 void			put_pixel(t_sprite *sprite, int x, int y, int color);
 unsigned int	get_color_in_pixel(t_sprite *sprite, int x, int y);
@@ -131,9 +140,10 @@ void			put_rain(t_root *root);
 void    		put_lightning   (t_root *root);
 void			update_frame(t_root *root);
 void			handle_player_mov(t_root *root);
+void			close_game_at_parsing(int fd, t_tilemap *map,
+					char *error_msg);
 int				close_game(t_root *root);
 void			free_matrix(t_tile **matrix);
-void			free_map_and_exit(t_tilemap *map);
 
 char    *get_empty_frame(t_tile tile, int timer);
 char    *get_player_frame(int dir, int timer);

@@ -6,11 +6,21 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:44:24 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/13 19:27:39 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/19 09:47:19 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long_bonus.h"
+
+void	close_game_at_parsing(int fd, t_tilemap *map, char *error_msg)
+{
+	if (fd)
+		close(fd);
+	if (map)
+		free_matrix(map->matrix);
+	ft_printf("%s", error_msg);
+	exit(0);
+}
 
 int	close_game(t_root *root)
 {
@@ -32,11 +42,4 @@ void	free_matrix(t_tile **matrix)
 	while (matrix[++i])
 		free(matrix[i]);
 	free(matrix);
-}
-
-void	free_map_and_exit(t_tilemap *map)
-{
-	free_matrix(map->matrix);
-	perror(NULL);
-	exit (0);
 }

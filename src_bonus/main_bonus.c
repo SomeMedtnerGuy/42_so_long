@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/29 20:34:26 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/17 19:03:25 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/19 10:50:28 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,10 +135,10 @@ int	main(int argc, char **argv)
 	t_root	root;
 
 	if (argc != 2)
-		return (0);
+		return (ft_printf(WRONG_USAGE_ERROR), 0);
 	srand(time(NULL));
 	parse_map(&root, argv[1]);
-	is_map_valid(&root.map);
+	check_map_validity(&root.map);
 	root.mlx = mlx_init();
 	root.win = mlx_new_window(root.mlx,
 			root.map.width * SPRITE_SIZE,
