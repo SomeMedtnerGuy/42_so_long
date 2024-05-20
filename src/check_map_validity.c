@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   is_map_valid.c                                     :+:      :+:    :+:   */
+/*   check_map_validity.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/10 16:33:13 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/13 16:57:46 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/19 11:05:40 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/so_long.h"
 
-static int	is_char_valid(t_tilemap *map, int pos_x, int pos_y);
-static int	is_map_beatable(t_tilemap *map, t_vector *p_start_pos);
-static void	all_collectibles_collected(char **map, int x,
-				int y, int *collectible_p);
-static char	**duplicate_matrix(t_tilemap *map);
+static int		is_char_valid(t_tilemap *map, int pos_x, int pos_y);
+static void		check_beatability(t_tilemap *map, t_vector *p_start_pos);
+static void		all_collectibles_collected(t_tile **map, int x,
+					int y, int *collectible_p);
+static t_tile	**duplicate_matrix(t_tilemap *map);
 
-int	is_map_valid(t_tilemap *map)
+void	check_map_validity(t_tilemap *map)
 {
 	int	y;
 	int	x;
 	int	checks;
 
 	map->collectible_am = 0;
+	map->available_space = 0;
 	y = -1;
 	while (++y < map->height)
 	{
@@ -33,15 +34,12 @@ int	is_map_valid(t_tilemap *map)
 		{
 			checks = is_char_valid(map, x, y);
 			if (checks == -1)
-				return (free_matrix(map->matrix), exit(0), FALSE);
+				close_game_at_parsing(0, map, INVALID_MAP_ERROR);
 		}
 	}
 	if (checks != 7)
-		return (ft_printf(INVALID_MAP_ERROR),
-			free_matrix(map->matrix), exit(0), FALSE);
-	if (!is_map_beatable(map, &map->p_start_pos))
-		return (FALSE);
-	return (TRUE);
+		close_game_at_parsing(0, map, INVALID_MAP_ERROR);
+	check_beatability(map, &map->p_start_pos);
 }
 
 static int	is_char_valid(t_tilemap *map, int pos_x, int pos_y)
@@ -49,78 +47,81 @@ static int	is_char_valid(t_tilemap *map, int pos_x, int pos_y)
 	static int	checks;
 	char		c;
 
-	c = map->matrix[pos_y][pos_x];
+	c = map->matrix[pos_y][pos_x].c;
 	if ((pos_y == 0 || pos_y == map->height - 1
 			|| pos_x == 0 || pos_x == map->width - 1)
-		&& c != '1')
-		return (ft_printf(INVALID_MAP_ERROR), -1);
-	else if (c == 'P' && checks % 2 == 0)
-		return (checks |= 1,
+		&& c != WALL)
+		return (-1);
+	else if (c == PLAYER && !(checks & 1 << PLAYER_FLAG))
+		return (checks |= 1 << PLAYER_FLAG, map->available_space += 1,
 			map->p_start_pos.x = pos_x,
 			map->p_start_pos.y = pos_y,
 			checks);
-	else if (c == 'E' && checks < 4)
-		return (checks |= 1 << 2, checks);
-	else if (c == 'C')
-		return (checks |= 1 << 1, map->collectible_am++, checks);
-	else if (c == '1' || c == '0')
+	else if (c == EXIT && !(checks & 1 << EXIT_FLAG))
+		return (map->available_space += 1, checks |= 1 << EXIT_FLAG, checks);
+	else if (c == COLLECTIBLE)
+		return (map->available_space += 1, checks |= 1 << COLLECT_FLAG,
+			map->collectible_am++, checks);
+	else if (c == EMPTY)
+		return (map->available_space += 1, checks);
+	else if (c == WALL)
 		return (checks);
-	else
-		return (ft_printf(INVALID_MAP_ERROR), -1);
+	return (-1);
 }
 
-static int	is_map_beatable(t_tilemap *map, t_vector *p_start_pos)
+static void	check_beatability(t_tilemap *map, t_vector *p_start_pos)
 {
-	char	**map_dup;
+	t_tile	**map_dup;
 	int		collectible_p;
 
 	collectible_p = 0;
 	map_dup = duplicate_matrix(map);
 	if (!map_dup)
-		return (ft_printf(ALLOC_ERROR), FALSE);
+		close_game_at_parsing(0, map, ALLOC_ERROR);
 	all_collectibles_collected(map_dup, p_start_pos->x,
 		p_start_pos->y, &collectible_p);
 	if (collectible_p != map->collectible_am + 1)
-		return (free_matrix(map_dup), free_matrix(map->matrix),
-			ft_printf(INVALID_MAP_ERROR), exit(0), FALSE);
+	{
+		free_matrix(map_dup);
+		close_game_at_parsing(0, map, INVALID_MAP_ERROR);
+	}
 	if (map->width > MAX_WIDTH || map->height > MAX_HEIGHT)
-		printf("Map exceeds screen measures! It will still be processed, \
-			but some tiles will may be hidden.\n");
-	return (free_matrix(map_dup), TRUE);
+		printf(MAP_TOO_BIG_WARNING);
+	free_matrix(map_dup);
 }
 
-static void	all_collectibles_collected(char **map, int x,
+static void	all_collectibles_collected(t_tile **map, int x,
 		int y, int *collectible_p)
 {
-	if (map[y][x] == 'F' || map[y][x] == '1')
+	if (map[y][x].c == FLOOD || map[y][x].c == WALL)
 		return ;
-	if (map[y][x] == 'C' || map[y][x] == 'E')
+	if (map[y][x].c == COLLECTIBLE || map[y][x].c == EXIT)
 		*collectible_p += 1;
-	map[y][x] = 'F';
+	map[y][x].c = FLOOD;
 	all_collectibles_collected(map, x + 1, y, collectible_p);
 	all_collectibles_collected(map, x - 1, y, collectible_p);
 	all_collectibles_collected(map, x, y + 1, collectible_p);
 	all_collectibles_collected(map, x, y - 1, collectible_p);
 }
 
-static char	**duplicate_matrix(t_tilemap *map)
+static t_tile	**duplicate_matrix(t_tilemap *map)
 {
-	char	**matrix;
+	t_tile	**matrix;
 	int		y;
 	int		x;
 
 	y = -1;
-	matrix = ft_calloc(map->height + 1, sizeof(char *));
+	matrix = (t_tile **)ft_calloc(map->height + 1, sizeof(t_tile *));
 	if (!matrix)
 		return (NULL);
 	while (++y < map->height)
 	{
 		x = -1;
-		matrix[y] = ft_calloc(map->width + 1, sizeof(char));
+		matrix[y] = ft_calloc(map->width + 1, sizeof(t_tile));
 		if (!matrix[y])
 			return (free_matrix(matrix), NULL);
 		while (++x < map->width)
-			matrix[y][x] = map->matrix[y][x];
+			matrix[y][x].c = map->matrix[y][x].c;
 	}
 	return (matrix);
 }

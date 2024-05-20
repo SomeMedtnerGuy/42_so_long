@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_frames_bonus.c                                 :+:      :+:    :+:   */
+/*   get_frames.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../include/so_long_bonus.h"
+#include "../include/so_long.h"
 
 char	*get_empty_frame(t_tile tile, int timer)
 {
@@ -54,17 +54,4 @@ char	*get_collectible_frame(t_tile tile)
 		return (ft_strdup(COLLECTIBLE_PATH));
 	else
 		return (ft_strdup(COLLECTIBLE_PATH_HELP));
-}
-
-char	*get_rain_frame(int timer)
-{
-	char	*str1;
-	char	*str2;
-
-	str1 = ft_itoa(timer % 4);
-	str2 = ft_strjoin(RAIN_PATH, str1);
-	free(str1);
-	str1 = ft_strjoin(str2, IMG_EXTENSION);
-	free(str2);
-	return (str1);
 }

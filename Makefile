@@ -6,7 +6,7 @@
 #    By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/29 21:47:57 by ndo-vale          #+#    #+#              #
-#    Updated: 2024/05/13 20:36:04 by ndo-vale         ###   ########.fr        #
+#    Updated: 2024/05/19 19:18:26 by ndo-vale         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,13 +19,16 @@ LIBS	= mlx_linux/libmlx.a libft/libft.a
 RM	= rm -rf
 
 SRC_DIR	= src
-SRCS		= $(SRC_DIR)/free_and_close.c \
-			$(SRC_DIR)/is_map_valid.c \
-			$(SRC_DIR)/main.c src/parse_map.c \
-		  	$(SRC_DIR)/pixel_helpers.c \
-		  	$(SRC_DIR)/put_stuff.c \
-		  	$(SRC_DIR)/sprite_helpers.c \
-			$(SRC_DIR)/update_frame.c
+SRCS		= $(SRC_DIR)/check_map_validity.c \
+			$(SRC_DIR)/free_and_close.c \
+			$(SRC_DIR)/get_frames.c \
+		  	$(SRC_DIR)/handle_player_mov.c \
+		  	$(SRC_DIR)/main.c \
+		  	$(SRC_DIR)/parse_map.c \
+			$(SRC_DIR)/pixel_helpers.c \
+			$(SRC_DIR)/put_stuff.c \
+			$(SRC_DIR)/render_next_frame.c \
+			$(SRC_DIR)/sprite_helpers.c
 SRC_BONUS_DIR	= src_bonus
 SRCS_BONUS	= $(SRC_BONUS_DIR)/check_map_validity_bonus.c \
 			$(SRC_BONUS_DIR)/free_and_close_bonus.c \
@@ -34,9 +37,10 @@ SRCS_BONUS	= $(SRC_BONUS_DIR)/check_map_validity_bonus.c \
 			$(SRC_BONUS_DIR)/main_bonus.c \
 			$(SRC_BONUS_DIR)/parse_map_bonus.c \
 		  	$(SRC_BONUS_DIR)/pixel_helpers_bonus.c \
+			$(SRC_BONUS_DIR)/put_effects_bonus.c \
 		  	$(SRC_BONUS_DIR)/put_stuff_bonus.c \
 		  	$(SRC_BONUS_DIR)/sprite_helpers_bonus.c \
-			$(SRC_BONUS_DIR)/update_frame_bonus.c
+			$(SRC_BONUS_DIR)/render_next_frame_bonus.c
 OBJS		= $(SRCS:.c=.o)
 OBJS_BONUS	= $(SRCS_BONUS:.c=.o)
 

@@ -6,7 +6,7 @@
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 11:39:00 by ndo-vale          #+#    #+#             */
-/*   Updated: 2024/05/19 10:59:07 by ndo-vale         ###   ########.fr       */
+/*   Updated: 2024/05/20 13:37:29 by ndo-vale         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_vector
 typedef struct s_tile
 {
 	char	c;
-	int	anim;
+	int		anim;
 }	t_tile;
 
 typedef struct s_sprite
@@ -70,46 +70,9 @@ typedef struct s_root
 	t_tilemap		map;
 	t_sprite		*world_sprite;
 	t_entity		player;
-	int			input_allowed;
+	int				input_allowed;
 	unsigned int	global_timer;
 }	t_root;
-
-# define TRUE 1
-# define FALSE 0
-
-# define PLAYER_FLAG 0
-# define COLLECT_FLAG 1
-# define EXIT_FLAG 2
-
-# define EMPTY '0'
-# define STD_EMPTY_PATH "./sprites_bonus/empty/empty0.xpm"
-# define EMPTY_PATH "./sprites_bonus/empty/empty"
-# define WALL '1'
-# define WALL_PATH "./sprites_bonus/wall/wall.xpm"
-# define COLLECTIBLE 'C'
-# define COLLECTIBLE_PATH "./sprites_bonus/collectible/collectible1.xpm"
-# define EXIT 'E'
-# define EXIT_PATH "./sprites_bonus/exit/exit.xpm"
-# define PLAYER 'P'
-# define STD_PLAYER_PATH "./sprites_bonus/player/player0.xpm"
-# define PLAYER_PATH "./sprites_bonus/player/player"
-# define RAIN_PATH "./sprites_bonus/rain/rain"
-# define IMG_EXTENSION ".xpm"
-# define MAP_EXTENSION ".ber"
-# define MAP_EXTENSION_LEN 4
-
-# define STILL 0
-# define UP 1
-# define RIGHT 2
-# define DOWN 3
-# define LEFT 4
-
-# define MAX_WIDTH 30
-# define MAX_HEIGHT 14
-# define FPS 10
-# define SECOND 1000000000
-# define SPRITE_SIZE 64
-# define PANIM_SIZE 128
 
 # define WRONG_USAGE_ERROR "Error\n Wrong usage"
 # define WRONG_EXTENSION_ERROR "Error\n File is not .ber\n"
@@ -120,34 +83,90 @@ typedef struct s_root
 # define MAP_TOO_BIG_WARNING "WARNING\n Map exceeds screen measures! \
 It will still be processed, but some tiles may be hidden.\n"
 
-void			check_map_validity(t_tilemap *map);
+# define WIN_MSG "You saved everyone and managed to escape!!\n"
+# define LOSE_MSG "You ran out of stamina and fell off the mountain!\n"
+
+# define TRUE 1
+# define FALSE 0
+
+# define PLAYER_FLAG 0
+# define COLLECT_FLAG 1
+# define EXIT_FLAG 2
+
+# define PROGRAM_NAME "so_long"
+
+# define FLOOD 'F'
+# define EMPTY '0'
+# define STD_EMPTY_PATH "./sprites_bonus/empty/empty0.xpm"
+# define EMPTY_PATH "./sprites_bonus/empty/empty"
+# define WALL '1'
+# define WALL_PATH "./sprites_bonus/wall/wall.xpm"
+# define COLLECTIBLE 'C'
+# define COLLECTIBLE_PATH "./sprites_bonus/collectible/collectible0.xpm"
+# define COLLECTIBLE_PATH_HELP "./sprites_bonus/collectible/collectible1.xpm"
+# define EXIT 'E'
+# define EXIT_PATH "./sprites_bonus/exit/exit.xpm"
+# define PLAYER 'P'
+# define STD_PLAYER_PATH "./sprites_bonus/player/player0.xpm"
+# define PLAYER_STANDING_PATH "./sprites_bonus/player/player00.xpm"
+# define PLAYER_PATH "./sprites_bonus/player/player"
+# define RAIN_PATH "./sprites_bonus/rain/rain"
+# define BALOON_PATH "./sprites_bonus/baloon.xpm"
+# define IMG_EXTENSION ".xpm"
+# define MAP_EXTENSION ".ber"
+# define MAP_EXTENSION_LEN 4
+
+# define STILL 0
+# define UP 1
+# define RIGHT 2
+# define DOWN 3
+# define LEFT 4
+
+# define WHITE 0xFFFFFF
+# define MAX_COLOR 0xFF
+# define MAX_WIDTH 30
+# define MAX_HEIGHT 14
+# define FPS 10
+# define SECOND 1000000000
+# define SPRITE_SIZE 64
+# define PANIM_SIZE 128
+# define BITE_SIZE 8
+
 void			parse_map(t_root *root, char *map_filename);
-void			put_pixel(t_sprite *sprite, int x, int y, int color);
-unsigned int	get_color_in_pixel(t_sprite *sprite, int x, int y);
-void			add_brightness_to_pixel(t_sprite *sprite, int x, int y);
-char			*get_sprite_path(t_tile tile, int timer);
+void			check_map_validity(t_tilemap *map);
+int				render_next_frame(t_root *root);
+void			handle_player_mov(t_root *root);
+
+char			*get_sprite_path(t_root *root, t_tile tile);
 t_sprite		*create_sprite(t_root *root, char *sprite_path);
-void			put_sprite_in_world(t_sprite *sprite,
-					t_root *root, int posx, int posy);
-void    		put_player_anim_in_world(t_sprite *sprite,
-					t_root *root, int posx, int posy);
-void    		put_rain_anim_in_world(t_sprite *sprite, 
-					t_root *root, int posx, int posy);
+void			put_sprite_in_world(t_sprite *sprite, t_root *root,
+					int posx, int posy);
+void			put_player_anim_in_world(t_sprite *sprite, t_root *root,
+					int posx, int posy);
+void			put_rain_anim_in_world(t_sprite *sprite, t_root *root,
+					int posx, int posy);
+
+char			*get_empty_frame(t_tile tile, int timer);
+char			*get_player_frame(int dir);
+char			*get_collectible_frame(t_tile tile);
+char			*get_rain_frame(int timer);
+
 void			put_map(t_root *root);
 void			put_player(t_root *root);
 void			put_collectibles(t_root *root);
+
 void			put_rain(t_root *root);
-void    		put_lightning   (t_root *root);
-void			update_frame(t_root *root);
-void			handle_player_mov(t_root *root);
-void			close_game_at_parsing(int fd, t_tilemap *map,
-					char *error_msg);
+void			put_lightning(t_root *root);
+void			put_mov_am_baloon(t_root *root);
+void			put_mov_am(t_root *root);
+
+void			put_pixel(t_sprite *sprite, int x, int y, int color);
+unsigned int	get_color_in_pixel(t_sprite *sprite, int x, int y);
+void			add_brightness_to_pixel(t_sprite *sprite, int x, int y);
+int				get_player_color(t_entity *player);
+
+void			close_game_at_parsing(int fd, t_tilemap *map, char *error_msg);
 int				close_game(t_root *root);
 void			free_matrix(t_tile **matrix);
-
-char    *get_empty_frame(t_tile tile, int timer);
-char    *get_player_frame(int dir, int timer);
-char    *get_collectible_frame(t_tile tile);
-char	*get_rain_frame(int timer);
 
 #endif

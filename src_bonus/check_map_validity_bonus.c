@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_map_validity.c                               :+:      :+:    :+:   */
+/*   check_map_validity_bonus.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndo-vale <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -50,21 +50,21 @@ static int	is_char_valid(t_tilemap *map, int pos_x, int pos_y)
 	c = map->matrix[pos_y][pos_x].c;
 	if ((pos_y == 0 || pos_y == map->height - 1
 			|| pos_x == 0 || pos_x == map->width - 1)
-		&& c != '1')
+		&& c != WALL)
 		return (-1);
-	else if (c == 'P' && !(checks & 1 << PLAYER_FLAG))
+	else if (c == PLAYER && !(checks & 1 << PLAYER_FLAG))
 		return (checks |= 1 << PLAYER_FLAG, map->available_space += 1,
 			map->p_start_pos.x = pos_x,
 			map->p_start_pos.y = pos_y,
 			checks);
-	else if (c == 'E' && !(checks & 1 << EXIT_FLAG))
+	else if (c == EXIT && !(checks & 1 << EXIT_FLAG))
 		return (map->available_space += 1, checks |= 1 << EXIT_FLAG, checks);
-	else if (c == 'C')
+	else if (c == COLLECTIBLE)
 		return (map->available_space += 1, checks |= 1 << COLLECT_FLAG,
 			map->collectible_am++, checks);
-	else if (c == '0')
+	else if (c == EMPTY)
 		return (map->available_space += 1, checks);
-	else if (c == '1')
+	else if (c == WALL)
 		return (checks);
 	return (-1);
 }
@@ -93,11 +93,11 @@ static void	check_beatability(t_tilemap *map, t_vector *p_start_pos)
 static void	all_collectibles_collected(t_tile **map, int x,
 		int y, int *collectible_p)
 {
-	if (map[y][x].c == 'F' || map[y][x].c == '1')
+	if (map[y][x].c == FLOOD || map[y][x].c == WALL)
 		return ;
-	if (map[y][x].c == 'C' || map[y][x].c == 'E')
+	if (map[y][x].c == COLLECTIBLE || map[y][x].c == EXIT)
 		*collectible_p += 1;
-	map[y][x].c = 'F';
+	map[y][x].c = FLOOD;
 	all_collectibles_collected(map, x + 1, y, collectible_p);
 	all_collectibles_collected(map, x - 1, y, collectible_p);
 	all_collectibles_collected(map, x, y + 1, collectible_p);
