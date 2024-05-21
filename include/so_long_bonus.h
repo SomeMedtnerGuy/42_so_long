@@ -74,9 +74,9 @@ typedef struct s_root
 	unsigned int	global_timer;
 }	t_root;
 
-# define WRONG_USAGE_ERROR "Error\n Wrong usage"
+# define WRONG_USAGE_ERROR "Error\n Wrong usage\n"
 # define WRONG_EXTENSION_ERROR "Error\n File is not .ber\n"
-# define WIDTH_ERROR "Error\n Map is not rectangular"
+# define WIDTH_ERROR "Error\n Map is not rectangular\n"
 # define ALLOC_ERROR "Error\n Allocation failure\n"
 # define INVALID_PATH_ERROR "Error\n Provided map path is invalid\n"
 # define INVALID_MAP_ERROR "ERROR\n Provided map is invalid\n"
